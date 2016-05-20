@@ -19,6 +19,7 @@ public class ClientePesquisa extends javax.swing.JFrame {
     public ClientePesquisa(String tela_anterior) {
         initComponents();
         this.tela_anterior = tela_anterior;
+        optNome.setSelected(true);
     }
 
     /**
@@ -45,6 +46,11 @@ public class ClientePesquisa extends javax.swing.JFrame {
         setBounds(new java.awt.Rectangle(200, 100, 0, 0));
 
         optNome.setText("Nome");
+        optNome.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                optNomeActionPerformed(evt);
+            }
+        });
 
         optSNome.setText("Sobre Nome");
         optSNome.addActionListener(new java.awt.event.ActionListener() {
@@ -146,17 +152,24 @@ public class ClientePesquisa extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    
+    //radio snome    
     private void optSNomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_optSNomeActionPerformed
-
+        optNome.setSelected(false);
+        optRg.setSelected(false);
+        optCPF.setSelected(false);
     }//GEN-LAST:event_optSNomeActionPerformed
-
+    // radio rg
     private void optRgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_optRgActionPerformed
-        // TODO add your handling code here:
+        optNome.setSelected(false);
+        optSNome.setSelected(false);
+        optCPF.setSelected(false);
     }//GEN-LAST:event_optRgActionPerformed
-
+    // radio cpf
     private void optCPFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_optCPFActionPerformed
-        // TODO add your handling code here:
+        optNome.setSelected(false);
+        optSNome.setSelected(false);
+        optRg.setSelected(false);
     }//GEN-LAST:event_optCPFActionPerformed
 
     private void tblClienteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblClienteMouseClicked
@@ -188,6 +201,13 @@ public class ClientePesquisa extends javax.swing.JFrame {
             new Main().setVisible(true);
         }
     }//GEN-LAST:event_btClienteCancelarActionPerformed
+
+    // radio nome
+    private void optNomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_optNomeActionPerformed
+        optSNome.setSelected(false);
+        optRg.setSelected(false);
+        optCPF.setSelected(false);
+    }//GEN-LAST:event_optNomeActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btClienteBuscar;

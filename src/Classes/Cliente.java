@@ -12,7 +12,8 @@ package Classes;
 public class Cliente {
     private String nome, sobreNome, CPF, RG, rua, Cidade, UF;
     private int numero;
-
+    double salario;
+    
     public String getNome() {
         return nome;
     }
@@ -59,5 +60,13 @@ public class Cliente {
     
     public void setUF(String UF) {
         this.UF = UF;
+    }
+    
+    public double getSalario() {
+        return salario;
+    }
+
+    public void setSalario(double salario) {
+        this.salario = salario;
     }
 }

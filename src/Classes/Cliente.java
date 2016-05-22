@@ -10,10 +10,43 @@ package Classes;
  * @author Lucas
  */
 public class Cliente {
-    private String nome, sobreNome, CPF, RG, rua, Cidade, UF;
-    private int numero;
+    private String nome, sobreNome, CPF, RG, rua ;
+    private int numero, cidade, uf;
     double salario;
     
+    public Cliente(String nome, String sobreNome, String CPF, String RG, String rua, int numero, 
+            int cidade, int uf, double salario ) {
+        this.nome = nome;
+        this.sobreNome = sobreNome;
+        this.CPF = CPF;
+        this.RG = RG;
+        this.rua = rua;
+        this.cidade = cidade;
+        this.uf = uf;
+        this.numero = numero;
+        this.salario = salario;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public void setSobreNome(String sobreNome) {
+        this.sobreNome = sobreNome;
+    }
+
+    public void setCPF(String CPF) {
+        this.CPF = CPF;
+    }
+
+    public void setRG(String RG) {
+        this.RG = RG;
+    }
+
+    public void setUf(int uf) {
+        this.uf = uf;
+    }
+        
     public String getNome() {
         return nome;
     }
@@ -46,20 +79,20 @@ public class Cliente {
         this.numero = numero;
     }
 
-    public String getCidade() {
-        return Cidade;
+    public int getCidade() {
+        return cidade;
     }
     
-    public void setCidade(String Cidade) {
-        this.Cidade = Cidade;
+    public void setCidade(int cidade) {
+        this.cidade = cidade;
     }
 
-    public String getUF() {
-        return UF;
+    public int getUF() {
+        return uf;
     }
     
-    public void setUF(String UF) {
-        this.UF = UF;
+    public void setUF(int uf) {
+        this.uf = uf;
     }
     
     public double getSalario() {

@@ -6,6 +6,7 @@
 package dao;
 
 import Classes.Cliente;
+import java.awt.List;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,7 +24,7 @@ public class ClienteDAO {
             + "cidade_codcidade, uf_coduf, salario) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ";
     
     // retorna arrays de clientes pesquisados por algum critério
-    public ArrayList<Cliente> selectCliente(String opt, String dado){
+    public ArrayList selectCliente(String opt, String dado){
         ArrayList<Cliente> listCliente = new ArrayList<>();
         Connection con = null;
         PreparedStatement stmt = null;
@@ -32,7 +33,7 @@ public class ClienteDAO {
         try{
             con = ConnectionFactory.getConnection();
             con.setAutoCommit(false);
-            stmt = con.prepareStatement(stmtSelectCliente,PreparedStatement.RETURN_GENERATED_KEYS);
+            stmt = con.prepareStatement(stmtSelectCliente);
             
             stmt.setString(1, opt);
             stmt.setString(2, dado);

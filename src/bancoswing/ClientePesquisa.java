@@ -74,6 +74,11 @@ public class ClientePesquisa extends javax.swing.JFrame {
         });
 
         btClienteBuscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/ic_search_black_18dp_1x.png"))); // NOI18N
+        btClienteBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btClienteBuscarActionPerformed(evt);
+            }
+        });
 
         tblCliente.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -208,6 +213,27 @@ public class ClientePesquisa extends javax.swing.JFrame {
         optRg.setSelected(false);
         optCPF.setSelected(false);
     }//GEN-LAST:event_optNomeActionPerformed
+
+    private void btClienteBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btClienteBuscarActionPerformed
+        // Clicou buscar
+        optNome.setSelected(false);
+        optRg.setSelected(false);
+        optCPF.setSelected(false);
+        String opt;
+        if(optCPF.isEnabled()){
+            opt = "cpf";
+        }
+        else if(optNome.isEnabled()){
+            opt = "nome";
+        }
+        else if(optRg.isEnabled()){
+            opt = "rg";
+        }
+        else if(optSNome.isEnabled()){
+            opt = "sobrenome";
+        }
+           
+    }//GEN-LAST:event_btClienteBuscarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btClienteBuscar;

@@ -12,6 +12,12 @@ package Classes;
 public class ContaInvestimento extends Conta {
     private double montanteMinimo, depositoMinimo;
 
+    public ContaInvestimento(Cliente c, double saldo, double montanteMinimo, double depositoMinimo){
+        super(c, saldo);
+        this.montanteMinimo = montanteMinimo;
+        this.depositoMinimo = depositoMinimo;
+    }
+    
     public double getMontanteMinimo() {
         return montanteMinimo;
     }

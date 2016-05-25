@@ -12,6 +12,11 @@ package Classes;
 public class ContaCorrente extends Conta {
     private double limite;
     
+    public ContaCorrente (Cliente c, double saldo, double limite){
+        super(c, saldo);
+        this.limite = limite;
+    }
+    
     public double getLimite(){
         return limite;
     }

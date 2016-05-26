@@ -5,6 +5,10 @@
  */
 package bancoswing;
 
+import Classes.Cliente;
+import dao.ClienteDAO;
+import java.util.ArrayList;
+
 /**
  *
  * @author Lemke
@@ -12,6 +16,7 @@ package bancoswing;
 public class ClientePesquisa extends javax.swing.JFrame {
 
     String tela_anterior;
+    ArrayList<Cliente> cliList;
 
     /**
      * Creates new form ClientePesquisa
@@ -20,6 +25,9 @@ public class ClientePesquisa extends javax.swing.JFrame {
         initComponents();
         this.tela_anterior = tela_anterior;
         optNome.setSelected(true);
+        ClienteDAO dao = new ClienteDAO();
+        cliList = dao.selectCliente("cpr","");
+        
     }
 
     /**
@@ -82,14 +90,15 @@ public class ClientePesquisa extends javax.swing.JFrame {
 
         tblCliente.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"TESTE"}
+                {"TESTE", "Nome", "Sobrenome", "0.00"},
+                {null, "nome2", "sobrenome2", "1.11"}
             },
             new String [] {
-                "Título 1"
+                "CPF", "Nome", "Sobrenome", "Salário"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false
+                false, true, true, true
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -158,6 +167,7 @@ public class ClientePesquisa extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     
+    
     //radio snome    
     private void optSNomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_optSNomeActionPerformed
         optNome.setSelected(false);
@@ -216,12 +226,11 @@ public class ClientePesquisa extends javax.swing.JFrame {
 
     private void btClienteBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btClienteBuscarActionPerformed
         // Clicou buscar
-        optNome.setSelected(false);
-        optRg.setSelected(false);
-        optCPF.setSelected(false);
-        String opt;
+        ClienteDAO dao = new ClienteDAO();
+        String opt = "nein";
+        String data = txtPesquisa.getText();
         if(optCPF.isEnabled()){
-            opt = "cpf";
+            opt = "cpf";            
         }
         else if(optNome.isEnabled()){
             opt = "nome";
@@ -232,7 +241,25 @@ public class ClientePesquisa extends javax.swing.JFrame {
         else if(optSNome.isEnabled()){
             opt = "sobrenome";
         }
-           
+        if(!data.equals("nein")){
+            // select do banco
+            cliList = dao.selectCliente(opt,data);
+            Object[][] linhas = new Object[cliList.size()][4];
+            int i = 0;
+            for(Cliente x: cliList ){
+                linhas[i][0] = x.getCPF();
+                linhas[i][1] = x.getNome();
+                linhas[i][2] = x.getSobreNome();
+                linhas[i][3] = x.getSalario();
+                i++;
+            }
+            String[] colunas = {"CPF","Nome","Sobrenome","Salário"};
+            tblCliente.setModel(new javax.swing.table.DefaultTableModel(linhas,colunas));
+        } else {
+            // pop-up "selecione uma radio"
+        }
+        
+        
     }//GEN-LAST:event_btClienteBuscarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

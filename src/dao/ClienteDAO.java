@@ -19,7 +19,7 @@ import java.util.ArrayList;
  */
 public class ClienteDAO {
     
-    private final String stmtSelectCliente = "SELECT * FROM Cliente WHERE ? LIKE ?+'%' ";
+    private final String stmtSelectCliente = "SELECT * FROM Cliente WHERE ? LIKE ? ";
     private final String stmtInsertCliente = "INSERT INTO Cliente (nome, sobrenome, cpf, rg, rua, numero, "
             + "cidade_codcidade, uf_coduf, salario) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ";
     
@@ -36,7 +36,7 @@ public class ClienteDAO {
             stmt = con.prepareStatement(stmtSelectCliente);
             
             stmt.setString(1, opt);
-            stmt.setString(2, dado);
+            stmt.setString(2, dado+'%');
             rs = stmt.executeQuery();
             while(rs.next()){
                 // Cliente(String nome, String sobreNome, String CPF, String RG, String rua, int numero, 

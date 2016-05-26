@@ -36,14 +36,14 @@ public class ClienteDAO {
             stmt = con.prepareStatement(stmtSelectCliente);
             
             stmt.setString(1, opt);
-            stmt.setString(2, dado+'%');
+            stmt.setString(2, dado+"%");
             rs = stmt.executeQuery();
             while(rs.next()){
                 // Cliente(String nome, String sobreNome, String CPF, String RG, String rua, int numero, 
                 // int cidade, int uf, double salario ) 
                 cliente = new Cliente(rs.getString("nome"), rs.getString("sobrenome"), rs.getString("cpf"), 
                         rs.getString("rg"), rs.getString("rua"), rs.getInt("numero"), rs.getInt("cidade_codcidade"),
-                        rs.getInt("uf"), rs.getDouble("salario") );
+                        rs.getInt("uf_coduf"), rs.getDouble("salario") );
                 listCliente.add(cliente);
             }
         }catch(SQLException | ClassNotFoundException ex){

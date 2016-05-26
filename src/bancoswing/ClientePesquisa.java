@@ -8,6 +8,7 @@ package bancoswing;
 import Classes.Cliente;
 import dao.ClienteDAO;
 import java.util.ArrayList;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -254,7 +255,7 @@ public class ClientePesquisa extends javax.swing.JFrame {
                 i++;
             }
             String[] colunas = {"CPF","Nome","Sobrenome","Salário"};
-            tblCliente.setModel(new javax.swing.table.DefaultTableModel(linhas,colunas));
+            tblCliente.setModel(new DefaultTableModel(linhas,colunas));
         } else {
             // pop-up "selecione uma radio"
         }

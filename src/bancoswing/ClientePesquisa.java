@@ -247,6 +247,7 @@ public class ClientePesquisa extends javax.swing.JFrame {
             cliList = dao.selectCliente(opt,data);
             Object[][] linhas = new Object[cliList.size()][4];
             int i = 0;
+            
             for(Cliente x: cliList ){
                 linhas[i][0] = x.getCPF();
                 linhas[i][1] = x.getNome();
@@ -255,7 +256,10 @@ public class ClientePesquisa extends javax.swing.JFrame {
                 i++;
             }
             String[] colunas = {"CPF","Nome","Sobrenome","Salário"};
-            tblCliente.setModel(new DefaultTableModel(linhas,colunas));
+            DefaultTableModel model = new DefaultTableModel(linhas,colunas);
+            tblCliente.setModel(model);
+            model.fireTableDataChanged();
+            
         } else {
             // pop-up "selecione uma radio"
         }

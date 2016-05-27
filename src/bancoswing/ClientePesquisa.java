@@ -8,7 +8,7 @@ package bancoswing;
 import Classes.Cliente;
 import dao.ClienteDAO;
 import java.util.ArrayList;
-import javax.swing.table.DefaultTableModel;
+import bancoswing.ModelTblClientePesquisa;
 
 /**
  *
@@ -16,19 +16,21 @@ import javax.swing.table.DefaultTableModel;
  */
 public class ClientePesquisa extends javax.swing.JFrame {
 
-    String tela_anterior;
-    ArrayList<Cliente> cliList;
-
+    private String tela_anterior;
+    private ArrayList<Cliente> cliList;
+    private ModelTblClientePesquisa modelo;
     /**
      * Creates new form ClientePesquisa
      */
     public ClientePesquisa(String tela_anterior) {
-        initComponents();
+        
+        // model abstrato
+        tblCliente.setModel(modelo);
         this.tela_anterior = tela_anterior;
         optNome.setSelected(true);
         ClienteDAO dao = new ClienteDAO();
         cliList = dao.selectCliente("cpr","");
-        
+        initComponents();
     }
 
     /**
@@ -242,28 +244,24 @@ public class ClientePesquisa extends javax.swing.JFrame {
         else if(optSNome.isEnabled()){
             opt = "sobrenome";
         }
-        if(!data.equals("nein")){
-            // select do banco
-            cliList = dao.selectCliente(opt,data);
-            Object[][] linhas = new Object[cliList.size()][4];
-            int i = 0;
-            
-            for(Cliente x: cliList ){
-                linhas[i][0] = x.getCPF();
-                linhas[i][1] = x.getNome();
-                linhas[i][2] = x.getSobreNome();
-                linhas[i][3] = x.getSalario();
-                i++;
-            }
-            String[] colunas = {"CPF","Nome","Sobrenome","Salário"};
-            DefaultTableModel model = new DefaultTableModel(linhas,colunas);
-            tblCliente.setModel(model);
-            model.fireTableDataChanged();
-            
-        } else {
-            // pop-up "selecione uma radio"
+      
+        // select do banco
+        cliList = dao.selectCliente(opt,data);
+        Object[][] linhas = new Object[cliList.size()][4];
+        int i = 0;
+
+        for(Cliente x: cliList ){
+            linhas[i][0] = x.getCPF();
+            linhas[i][1] = x.getNome();
+            linhas[i][2] = x.getSobreNome();
+            linhas[i][3] = x.getSalario();
+            i++;
         }
-        
+        String[] colunas = {"CPF","Nome","Sobrenome","Salário"};
+        modelo.setListaCliente(cliList);
+        tblCliente.setModel(modelo);
+        modelo.fireTableDataChanged();
+                   
         
     }//GEN-LAST:event_btClienteBuscarActionPerformed
 

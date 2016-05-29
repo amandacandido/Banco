@@ -22,7 +22,7 @@ public class ClientePesquisa extends javax.swing.JFrame {
 
     private String tela_anterior;
     private ArrayList<Cliente> cliList;
-    private ModelTblClientePesquisa modelo = new ModelTblClientePesquisa();
+    private ModelTblClientePesquisa modelo = new ModelTblClientePesquisa("nome", "");
     /**
      * Creates new form ClientePesquisa
      * @param tela_anterior
@@ -220,8 +220,7 @@ public class ClientePesquisa extends javax.swing.JFrame {
 
     private void btClienteBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btClienteBuscarActionPerformed
         // Clicou buscar
-        ClienteDAO dao = new ClienteDAO();
-        String opt = "nein";
+        String opt = null;
         String data = txtPesquisa.getText();
         if(optCPF.isEnabled()){
             opt = "cpf";            
@@ -237,9 +236,9 @@ public class ClientePesquisa extends javax.swing.JFrame {
         }
       
         // select do banco
-        modelo.setListaCliente(cliList);
-        tblCliente.setModel(modelo);
-        modelo.fireTableDataChanged();
+        modelo.reSelect(opt, data);
+        //tblCliente.setModel(modelo);
+        //
                    
         
     }//GEN-LAST:event_btClienteBuscarActionPerformed

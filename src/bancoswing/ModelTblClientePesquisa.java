@@ -18,14 +18,21 @@ import javax.swing.table.AbstractTableModel;
  */
 public class ModelTblClientePesquisa extends AbstractTableModel{
 
-    private final String[] colunas = new String[]{"CPF","Nome","Sobrenome","Salário"};
+    private String[] colunas; 
     private Object[][] linhas;
     private List<Cliente> cliLista = new ArrayList<>();
     ClienteDAO cliDao = new ClienteDAO();
     
-    public ModelTblClientePesquisa() {
-        cliLista = cliDao.selectCliente("nome", "");    
+    public ModelTblClientePesquisa(String opt, String pesq) {
+        cliLista = cliDao.selectCliente(opt, pesq);    
         updateTable();
+        colunas = new String[]{"CPF","Nome","Sobrenome","Salário"};
+    }
+    
+    public void reSelect(String opt, String pesq){
+        cliLista = cliDao.selectCliente(opt, pesq);    
+        updateTable();
+        fireTableDataChanged();
     }
     
     public void updateTable(){
@@ -47,7 +54,7 @@ public class ModelTblClientePesquisa extends AbstractTableModel{
 
     @Override
     public int getColumnCount() {
-        return linhas[0].length;
+        return colunas.length;
     }
 
     @Override
@@ -58,6 +65,11 @@ public class ModelTblClientePesquisa extends AbstractTableModel{
     public void setListaCliente(List lista){
         this.cliLista = lista;
         this.fireTableDataChanged();
+    }
+
+    @Override
+    public String getColumnName(int col) {
+        return colunas[col];
     }
     
 }

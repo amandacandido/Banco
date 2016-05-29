@@ -130,49 +130,11 @@
       <SubComponents>
         <Component class="javax.swing.JTable" name="tblCliente">
           <Properties>
-            <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-              <Table columnCount="4" rowCount="2">
-                <Column editable="false" title="CPF" type="java.lang.Object">
-                  <Data value="TESTE"/>
-                  <Data value="null"/>
-                </Column>
-                <Column editable="true" title="Nome" type="java.lang.Object">
-                  <Data value="Nome"/>
-                  <Data value="nome2"/>
-                </Column>
-                <Column editable="true" title="Sobrenome" type="java.lang.Object">
-                  <Data value="Sobrenome"/>
-                  <Data value="sobrenome2"/>
-                </Column>
-                <Column editable="true" title="Sal&#xe1;rio" type="java.lang.Object">
-                  <Data value="0.00"/>
-                  <Data value="1.11"/>
-                </Column>
-              </Table>
+            <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection code="modelo" type="code"/>
             </Property>
             <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
-              <TableColumnModel selectionModel="0">
-                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
-                  <Title/>
-                  <Editor/>
-                  <Renderer/>
-                </Column>
-                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
-                  <Title/>
-                  <Editor/>
-                  <Renderer/>
-                </Column>
-                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
-                  <Title/>
-                  <Editor/>
-                  <Renderer/>
-                </Column>
-                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
-                  <Title/>
-                  <Editor/>
-                  <Renderer/>
-                </Column>
-              </TableColumnModel>
+              <TableColumnModel selectionModel="0"/>
             </Property>
             <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">
               <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
@@ -181,6 +143,9 @@
           <Events>
             <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="tblClienteMouseClicked"/>
           </Events>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_ListenersCodePost" type="java.lang.String" value="tblCliente.getModel().addTableModelListener(new TableModelListener() {&#xa;    public void tableChanged(TableModelEvent e) {&#xa;    &#xa;    }&#xa;});"/>
+          </AuxValues>
         </Component>
       </SubComponents>
     </Container>

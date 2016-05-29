@@ -6,6 +6,8 @@
 package bancoswing;
 
 import Classes.Cliente;
+import dao.*;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
@@ -16,27 +18,41 @@ import javax.swing.table.AbstractTableModel;
  */
 public class ModelTblClientePesquisa extends AbstractTableModel{
 
-    private String[] colunas = new String[]{"CPF","Nome","Sobrenome","Salário"};
-    private List<Cliente> cliLista = new ArrayList();
+    private final String[] colunas = new String[]{"CPF","Nome","Sobrenome","Salário"};
+    private Object[][] linhas;
+    private List<Cliente> cliLista = new ArrayList<>();
+    ClienteDAO cliDao = new ClienteDAO();
     
-    public ModelTblClientePesquisa(){
-        
+    public ModelTblClientePesquisa() {
+        cliLista = cliDao.selectCliente("nome", "");    
+        updateTable();
     }
     
+    public void updateTable(){
+        linhas = new Object[cliLista.size()][4];
+        int i = 0;
+        for (Cliente x : cliLista){
+            linhas[i][0] = x.getCPF();
+            linhas[i][1] = x.getNome();
+            linhas[i][2] = x.getSobreNome();
+            linhas[i][3] = x.getSalario();
+            i++;
+        }
+    }
     
     @Override
     public int getRowCount() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return linhas.length; 
     }
 
     @Override
     public int getColumnCount() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return linhas[0].length;
     }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return linhas[rowIndex][columnIndex];
     }
     
     public void setListaCliente(List lista){

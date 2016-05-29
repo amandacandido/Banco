@@ -7,8 +7,12 @@ package bancoswing;
 
 import Classes.Cliente;
 import dao.ClienteDAO;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import bancoswing.ModelTblClientePesquisa;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 
 /**
  *
@@ -18,19 +22,17 @@ public class ClientePesquisa extends javax.swing.JFrame {
 
     private String tela_anterior;
     private ArrayList<Cliente> cliList;
-    private ModelTblClientePesquisa modelo;
+    private ModelTblClientePesquisa modelo = new ModelTblClientePesquisa();
     /**
      * Creates new form ClientePesquisa
+     * @param tela_anterior
      */
     public ClientePesquisa(String tela_anterior) {
-        
-        // model abstrato
-        tblCliente.setModel(modelo);
-        this.tela_anterior = tela_anterior;
-        optNome.setSelected(true);
-        ClienteDAO dao = new ClienteDAO();
-        cliList = dao.selectCliente("cpr","");
+
+        this.tela_anterior = tela_anterior;        
         initComponents();
+        optNome.setSelected(true);
+
     }
 
     /**
@@ -91,26 +93,15 @@ public class ClientePesquisa extends javax.swing.JFrame {
             }
         });
 
-        tblCliente.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {"TESTE", "Nome", "Sobrenome", "0.00"},
-                {null, "nome2", "sobrenome2", "1.11"}
-            },
-            new String [] {
-                "CPF", "Nome", "Sobrenome", "Salário"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, true, true, true
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
+        tblCliente.setModel(modelo);
         tblCliente.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tblClienteMouseClicked(evt);
+            }
+        });
+        tblCliente.getModel().addTableModelListener(new TableModelListener() {
+            public void tableChanged(TableModelEvent e) {
+
             }
         });
         jScrollPane1.setViewportView(tblCliente);
@@ -170,7 +161,7 @@ public class ClientePesquisa extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     
-    
+    // tbl changed
     //radio snome    
     private void optSNomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_optSNomeActionPerformed
         optNome.setSelected(false);
@@ -246,18 +237,6 @@ public class ClientePesquisa extends javax.swing.JFrame {
         }
       
         // select do banco
-        cliList = dao.selectCliente(opt,data);
-        Object[][] linhas = new Object[cliList.size()][4];
-        int i = 0;
-
-        for(Cliente x: cliList ){
-            linhas[i][0] = x.getCPF();
-            linhas[i][1] = x.getNome();
-            linhas[i][2] = x.getSobreNome();
-            linhas[i][3] = x.getSalario();
-            i++;
-        }
-        String[] colunas = {"CPF","Nome","Sobrenome","Salário"};
         modelo.setListaCliente(cliList);
         tblCliente.setModel(modelo);
         modelo.fireTableDataChanged();

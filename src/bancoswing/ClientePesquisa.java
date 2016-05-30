@@ -184,11 +184,15 @@ public class ClientePesquisa extends javax.swing.JFrame {
     private void tblClienteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblClienteMouseClicked
         if (evt.getClickCount() == 2 && !evt.isConsumed()) {
             evt.consume();
+            
+            int i = tblCliente.getSelectedRow();
+            Cliente c = modelo.getRow(i);
+        
             this.setVisible(false);
-            if (tela_anterior.equals(new ContaCadastro().getTitle())) {
+            if (tela_anterior.equals(new ClienteCadastro(null).getTitle())) {
+                new ClienteCadastro(c).setVisible(true);
+            } else if (tela_anterior.equals(new ContaCadastro().getTitle())) {
                 new ContaCadastro().setVisible(true);
-            } else if (tela_anterior.equals(new ClienteCadastro().getTitle())) {
-                new ClienteCadastro().setVisible(true);
             } else if (tela_anterior.equals(new ContaGerenciar().getTitle())) {
                 new ContaGerenciar().setVisible(true);
             } else {
@@ -200,10 +204,10 @@ public class ClientePesquisa extends javax.swing.JFrame {
 
     private void btClienteCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btClienteCancelarActionPerformed
         this.setVisible(false);
-        if (tela_anterior.equals(new ContaCadastro().getTitle())) {
+        if (tela_anterior.equals(new ClienteCadastro(null).getTitle())) {
+            new ClienteCadastro(null).setVisible(true);
+        } else if (tela_anterior.equals(new ContaCadastro().getTitle())) {
             new ContaCadastro().setVisible(true);
-        } else if (tela_anterior.equals(new ClienteCadastro().getTitle())) {
-            new ClienteCadastro().setVisible(true);
         } else if (tela_anterior.equals(new ContaGerenciar().getTitle())) {
             new ContaGerenciar().setVisible(true);
         } else {
@@ -222,16 +226,16 @@ public class ClientePesquisa extends javax.swing.JFrame {
         // Clicou buscar
         String opt = null;
         String data = txtPesquisa.getText();
-        if(optCPF.isEnabled()){
+        if(optCPF.isSelected()){
             opt = "cpf";            
         }
-        else if(optNome.isEnabled()){
+        else if(optNome.isSelected()){
             opt = "nome";
         }
-        else if(optRg.isEnabled()){
+        else if(optRg.isSelected()){
             opt = "rg";
         }
-        else if(optSNome.isEnabled()){
+        else if(optSNome.isSelected()){
             opt = "sobrenome";
         }
       

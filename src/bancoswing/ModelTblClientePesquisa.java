@@ -72,4 +72,7 @@ public class ModelTblClientePesquisa extends AbstractTableModel{
         return colunas[col];
     }
     
+    public Cliente getRow(int index){
+        return cliLista.get(index);
+    }    
 }

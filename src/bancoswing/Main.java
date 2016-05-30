@@ -121,7 +121,7 @@ public class Main extends javax.swing.JFrame {
 
     private void btMainGerClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btMainGerClientesActionPerformed
         this.setVisible(false);
-        new ClienteCadastro().setVisible(true);
+        new ClienteCadastro(null).setVisible(true);
     }//GEN-LAST:event_btMainGerClientesActionPerformed
 
     private void btMainCriContaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btMainCriContaActionPerformed

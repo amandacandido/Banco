@@ -19,7 +19,6 @@ import java.util.ArrayList;
  */
 public class ClienteDAO {
     
-    private final String stmtSelectCliente = "SELECT * FROM Cliente WHERE LOWER(?) LIKE LOWER(?) ";
     private final String stmtInsertCliente = "INSERT INTO Cliente (nome, sobrenome, cpf, rg, rua, numero, "
             + "cidade_codcidade, uf_coduf, salario) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ";
     
@@ -31,12 +30,11 @@ public class ClienteDAO {
         ResultSet rs = null;
         Cliente cliente;
         try{
+            String stmtSelectCliente = "SELECT * FROM Cliente WHERE "+opt+" LIKE ? ";
             con = ConnectionFactory.getConnection();
-            con.setAutoCommit(false);
             stmt = con.prepareStatement(stmtSelectCliente);
             
-            stmt.setString(1, opt);
-            stmt.setString(2, "%" + dado + "%");
+            stmt.setString(1, "%"+dado+"%");
             rs = stmt.executeQuery();
             while(rs.next()){
                 // Cliente(String nome, String sobreNome, String CPF, String RG, String rua, int numero, 
@@ -54,6 +52,33 @@ public class ClienteDAO {
             try{con.close();}catch(Exception ex){System.out.println("Erro ao fechar conexão. Ex="+ex.getMessage());};
         }
         return listCliente;
+    }
+    
+    public void insertCliente(Cliente c){
+        Connection con = null;
+        PreparedStatement stmt = null;
+        try{
+            con = ConnectionFactory.getConnection();
+            stmt = con.prepareStatement(stmtInsertCliente);
+            
+            stmt.setString(1, c.getNome());
+            stmt.setString(2, c.getSobreNome());
+            stmt.setString(3, c.getCPF());
+            stmt.setString(4, c.getRG());
+            stmt.setString(5, c.getRua());
+            stmt.setInt(6, c.getNumero());
+            stmt.setInt(7, c.getCidade());
+            stmt.setInt(8, c.getUF());
+            stmt.setDouble(9, c.getSalario());
+            
+            stmt.execute();
+            
+        }catch(SQLException | ClassNotFoundException ex){
+            throw new RuntimeException("Erro ao buscar cliente. Origem = "+ex.getMessage());
+        }finally{
+            try{stmt.close();}catch(Exception ex){System.out.println("Erro ao fechar stmt. Ex="+ex.getMessage());};
+            try{con.close();}catch(Exception ex){System.out.println("Erro ao fechar conexão. Ex="+ex.getMessage());};
+        }
     }
     
 }

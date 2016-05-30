@@ -5,6 +5,10 @@
  */
 package bancoswing;
 
+import Classes.Cliente;
+import dao.ClienteDAO;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Lemke
@@ -14,10 +18,28 @@ public class ClienteCadastro extends javax.swing.JFrame {
     /**
      * Creates new form ClienteCadastro
      */
-    public ClienteCadastro() {
+    
+    public ClienteCadastro(Cliente c) {
         initComponents();
+        if (c == null){
+            btClienteExcluir.setEnabled(false);
+            btClienteConta.setEnabled(false);            
+        }else{
+            btClienteExcluir.setEnabled(true);
+            btClienteConta.setEnabled(true);
+            
+            txtClienteNome.setText(c.getNome());
+            txtClienteSNome.setText(c.getSobreNome());
+            txtClienteSalario.setText(""+c.getSalario());
+            txtClienteCPF.setText(c.getCPF());
+            txtClienteRg.setText(c.getRG());
+            txtClienteRua.setText(c.getRua());
+            txtClienteNumero.setText(""+c.getNumero());
+            txtClienteCidade.setText(""+c.getCidade());
+            txtClienteUF.setText(""+c.getUF());
+        }
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -33,6 +55,8 @@ public class ClienteCadastro extends javax.swing.JFrame {
         txtClienteNome = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         txtClienteSNome = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
+        txtClienteSalario = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         txtClienteRg = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
@@ -60,6 +84,8 @@ public class ClienteCadastro extends javax.swing.JFrame {
         jLabel1.setText("Nome:");
 
         jLabel2.setText("Sobre Nome:");
+
+        jLabel10.setText("Salário:");
 
         jLabel3.setText("RG");
 
@@ -111,9 +137,11 @@ public class ClienteCadastro extends javax.swing.JFrame {
 
         btClienteExcluir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/ic_delete_black_18dp_1x.png"))); // NOI18N
         btClienteExcluir.setText("Excluir");
+        btClienteExcluir.setEnabled(false);
 
         btClienteConta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/ic_forward_black_18dp_1x.png"))); // NOI18N
         btClienteConta.setText("Criar Conta");
+        btClienteConta.setEnabled(false);
         btClienteConta.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btClienteContaActionPerformed(evt);
@@ -138,7 +166,11 @@ public class ClienteCadastro extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtClienteSNome, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(txtClienteSNome, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel10)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtClienteSalario, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                             .addComponent(jLabel1)
@@ -183,7 +215,10 @@ public class ClienteCadastro extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(txtClienteSNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtClienteSNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel10)
+                        .addComponent(txtClienteSalario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
@@ -224,7 +259,17 @@ public class ClienteCadastro extends javax.swing.JFrame {
     }//GEN-LAST:event_txtClienteUFActionPerformed
 
     private void btClienteSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btClienteSalvarActionPerformed
-        // TODO add your handling code here:
+        ClienteDAO dao = new ClienteDAO();
+        
+        Cliente c = new Cliente(txtClienteNome.getText().toString(), txtClienteSNome.getText().toString(),
+                txtClienteCPF.getText().toString(), txtClienteRg.getText().toString(),
+                txtClienteRua.getText().toString(), Integer.parseInt(txtClienteNumero.getText()),
+                Integer.parseInt(txtClienteCidade.getText()), Integer.parseInt(txtClienteUF.getText()), 
+                Double.parseDouble(txtClienteSalario.getText()));
+     
+        dao.insertCliente(c);
+        JOptionPane.showMessageDialog(null, "Salvo com sucesso!", "OK", JOptionPane.INFORMATION_MESSAGE);
+        
     }//GEN-LAST:event_btClienteSalvarActionPerformed
 
     private void btClienteCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btClienteCancelarActionPerformed
@@ -249,6 +294,7 @@ public class ClienteCadastro extends javax.swing.JFrame {
     private javax.swing.JButton btClientePesquisar;
     private javax.swing.JButton btClienteSalvar;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -265,6 +311,7 @@ public class ClienteCadastro extends javax.swing.JFrame {
     private javax.swing.JTextField txtClienteRg;
     private javax.swing.JTextField txtClienteRua;
     private javax.swing.JTextField txtClienteSNome;
+    private javax.swing.JTextField txtClienteSalario;
     private javax.swing.JTextField txtClienteUF;
     // End of variables declaration//GEN-END:variables
 }

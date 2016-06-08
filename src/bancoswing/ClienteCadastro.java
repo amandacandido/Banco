@@ -300,7 +300,7 @@ public class ClienteCadastro extends javax.swing.JFrame {
     }//GEN-LAST:event_cidadeComboBoxActionPerformed
 
     //minhas variables
-    private String[]
+    private String[]''
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btClienteCancelar;
     private javax.swing.JButton btClienteConta;

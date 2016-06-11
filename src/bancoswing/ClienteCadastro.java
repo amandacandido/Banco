@@ -50,10 +50,26 @@ public class ClienteCadastro extends javax.swing.JFrame {
             txtClienteRg.setText(c.getRG());
             txtClienteRua.setText(c.getRua());
             txtClienteNumero.setText(""+c.getNumero());
-
             
-            //txtClienteCidade.setText(""+c.getCidade());
-            //txtClienteUF.setText(""+c.getUF());
+            String strComboEst = null;
+            int intComboEst = 0;
+            for (Map.Entry<String, Integer> entry : mapEstado.entrySet()) {
+                if(entry.getValue().equals(c.getUF())){
+                    strComboEst = entry.getKey();
+                    intComboEst = entry.getValue();
+                }
+            }
+            estadoComboBox.setSelectedItem(mapEstado.get(strComboEst));
+            
+            mapCidade = cedao.selectCidade(intComboEst);
+            String strComboCid = null;
+            for (Map.Entry<String, Integer> entry : mapCidade.entrySet()) {
+                if(entry.getValue().equals(c.getCidade())){
+                    strComboCid = entry.getKey();
+                }
+            }
+            cidadeComboBox.setSelectedItem(mapCidade.get(strComboCid));
+            
         }
     }
     
@@ -178,6 +194,11 @@ public class ClienteCadastro extends javax.swing.JFrame {
             }
         });
 
+        cidadeComboBox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cidadeComboBoxItemStateChanged(evt);
+            }
+        });
         cidadeComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cidadeComboBoxActionPerformed(evt);
@@ -300,12 +321,17 @@ public class ClienteCadastro extends javax.swing.JFrame {
     }//GEN-LAST:event_txtClienteNumeroActionPerformed
 
     private void btClienteSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btClienteSalvarActionPerformed
+        String chaveEst = (String) estadoComboBox.getSelectedItem();
+        int codEst = mapEstado.get(chaveEst);
+        String chaveCid = (String) cidadeComboBox.getSelectedItem();
+        int codCid = mapCidade.get(chaveCid);
+        
         ClienteDAO dao = new ClienteDAO();
         
         Cliente c = new Cliente(txtClienteNome.getText().toString(), txtClienteSNome.getText().toString(),
                 txtClienteCPF.getText().toString(), txtClienteRg.getText().toString(),
                 txtClienteRua.getText().toString(), Integer.parseInt(txtClienteNumero.getText()),
-                Integer.parseInt(cidadeComboBox.getToolTipText()), Integer.parseInt(estadoComboBox.getToolTipText()), 
+                codCid, codEst,     // códs. Cidade e UF 
                 Double.parseDouble(txtClienteSalario.getText()));
      
         dao.insertCliente(c);
@@ -348,6 +374,11 @@ public class ClienteCadastro extends javax.swing.JFrame {
         DefaultComboBoxModel model = new DefaultComboBoxModel( arrCidade );
         cidadeComboBox.setModel( model );
     }//GEN-LAST:event_estadoComboBoxItemStateChanged
+
+    private void cidadeComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cidadeComboBoxItemStateChanged
+             
+        
+    }//GEN-LAST:event_cidadeComboBoxItemStateChanged
 
     //minhas variables
     

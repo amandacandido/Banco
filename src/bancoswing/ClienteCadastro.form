@@ -298,6 +298,7 @@
     </Component>
     <Component class="javax.swing.JComboBox" name="cidadeComboBox">
       <Events>
+        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="cidadeComboBoxItemStateChanged"/>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cidadeComboBoxActionPerformed"/>
       </Events>
       <AuxValues>

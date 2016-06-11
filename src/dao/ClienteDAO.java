@@ -19,7 +19,9 @@ import java.util.ArrayList;
  */
 public class ClienteDAO {
     
-    private final String stmtInsertCliente = "INSERT INTO Cliente (nome, sobrenome, cpf, rg, rua, numero, "
+    private final String stmtDeleteCliente = "DELETE * FROM cliente WHERE cpf = ? ";
+    
+    private final String stmtInsertCliente = "INSERT INTO cliente (nome, sobrenome, cpf, rg, rua, numero, "
             + "cidade_codcidade, uf_coduf, salario) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ";
     
     // retorna arrays de clientes pesquisados por algum critério
@@ -75,6 +77,25 @@ public class ClienteDAO {
             
         }catch(SQLException | ClassNotFoundException ex){
             throw new RuntimeException("Erro ao buscar cliente. Origem = "+ex.getMessage());
+        }finally{
+            try{stmt.close();}catch(Exception ex){System.out.println("Erro ao fechar stmt. Ex="+ex.getMessage());};
+            try{con.close();}catch(Exception ex){System.out.println("Erro ao fechar conexão. Ex="+ex.getMessage());};
+        }
+    }
+    
+    public void deleteCliente(Cliente c){
+        Connection con = null;
+        PreparedStatement stmt = null;
+        try{
+            con = ConnectionFactory.getConnection();
+            stmt = con.prepareStatement(stmtDeleteCliente);
+            
+            stmt.setString(1, c.getCPF());
+            
+            stmt.execute();
+            
+        }catch(SQLException | ClassNotFoundException ex){
+            throw new RuntimeException("Erro ao excluir cliente. Origem = "+ex.getMessage());
         }finally{
             try{stmt.close();}catch(Exception ex){System.out.println("Erro ao fechar stmt. Ex="+ex.getMessage());};
             try{con.close();}catch(Exception ex){System.out.println("Erro ao fechar conexão. Ex="+ex.getMessage());};

@@ -9,8 +9,11 @@ package bancoswing;
 import Classes.Cliente;
 import dao.CidadeEstadoDAO;
 import dao.ClienteDAO;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.Map;
 import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 
 /**
@@ -19,11 +22,6 @@ import javax.swing.JOptionPane;
  */
 public class ClienteCadastro extends javax.swing.JFrame {
 
-    private CidadeEstadoDAO cedao = new CidadeEstadoDAO();
-    private Map<String,Integer> mapEstado;
-    private Map<String,Integer> mapCidade;
-    private String[] arrEstado;
-    private String[] arrCidade;
     /**
      * Creates new form ClienteCadastro    /**
      * Creates new form ClienteCadastro
@@ -31,18 +29,17 @@ public class ClienteCadastro extends javax.swing.JFrame {
     
     public ClienteCadastro(Cliente c) {
         
-        mapEstado = cedao.selectEstado();
+        mapEstado = cedao.selectEstado();   // consulta BD
         arrEstado = mapEstado.keySet().toArray(new String[mapEstado.size()]);
-
-        mapCidade = cedao.selectCidade(1);
-        arrCidade = mapCidade.keySet().toArray(new String[mapCidade.size()]);
-        
+                
         initComponents(); 
         
         if (c == null){
             btClienteExcluir.setEnabled(false);
             btClienteConta.setEnabled(false);            
         }else{
+            // TODO: selecionar estado correto do cliente e cidade
+            //{}
             btClienteExcluir.setEnabled(true);
             btClienteConta.setEnabled(true);
             
@@ -92,8 +89,16 @@ public class ClienteCadastro extends javax.swing.JFrame {
         btClienteCancelar = new javax.swing.JButton();
         btClienteExcluir = new javax.swing.JButton();
         btClienteConta = new javax.swing.JButton();
-        estadoComboBox = new javax.swing.JComboBox<>();
-        cidadeComboBox = new javax.swing.JComboBox<>();
+        estadoComboBox = new javax.swing.JComboBox<>(
+            arrEstado
+        );
+        String chave = (String) estadoComboBox.getSelectedItem();
+        Integer valor = mapEstado.get(chave);
+        mapCidade = cedao.selectCidade(valor);
+        arrCidade = mapCidade.keySet().toArray(new String[mapCidade.size()]);
+        cidadeComboBox = new javax.swing.JComboBox<>(
+            arrCidade
+        );
 
         jLabel6.setText("RG");
 
@@ -162,13 +167,17 @@ public class ClienteCadastro extends javax.swing.JFrame {
             }
         });
 
+        estadoComboBox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                estadoComboBoxItemStateChanged(evt);
+            }
+        });
         estadoComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 estadoComboBoxActionPerformed(evt);
             }
         });
 
-        cidadeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         cidadeComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cidadeComboBoxActionPerformed(evt);
@@ -324,15 +333,29 @@ public class ClienteCadastro extends javax.swing.JFrame {
     }//GEN-LAST:event_cidadeComboBoxActionPerformed
 
     // listener de estado
+    
     private void estadoComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_estadoComboBoxActionPerformed
+
+    }//GEN-LAST:event_estadoComboBoxActionPerformed
+
+    private void estadoComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_estadoComboBoxItemStateChanged
+        
         String chave = (String) estadoComboBox.getSelectedItem();
         Integer valor = mapEstado.get(chave);
         mapCidade = cedao.selectCidade(valor);
         arrCidade = mapCidade.keySet().toArray(new String[mapCidade.size()]);
         
-    }//GEN-LAST:event_estadoComboBoxActionPerformed
+        DefaultComboBoxModel model = new DefaultComboBoxModel( arrCidade );
+        cidadeComboBox.setModel( model );
+    }//GEN-LAST:event_estadoComboBoxItemStateChanged
 
     //minhas variables
+    
+    private CidadeEstadoDAO cedao = new CidadeEstadoDAO();
+    private Map<String,Integer> mapEstado;
+    private Map<String,Integer> mapCidade;
+    private String[] arrEstado;
+    private String[] arrCidade;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btClienteCancelar;
     private javax.swing.JButton btClienteConta;

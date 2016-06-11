@@ -1,3 +1,4 @@
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -6,21 +7,38 @@
 package bancoswing;
 
 import Classes.Cliente;
+import dao.CidadeEstadoDAO;
 import dao.ClienteDAO;
+import java.util.Map;
+import javax.swing.ComboBoxModel;
 import javax.swing.JOptionPane;
 
 /**
  *
- * @author Lemke
+ * @author Lemke, Nantes
  */
 public class ClienteCadastro extends javax.swing.JFrame {
 
+    private CidadeEstadoDAO cedao = new CidadeEstadoDAO();
+    private Map<String,Integer> mapEstado;
+    private Map<String,Integer> mapCidade;
+    private String[] arrEstado;
+    private String[] arrCidade;
     /**
+     * Creates new form ClienteCadastro    /**
      * Creates new form ClienteCadastro
      */
     
     public ClienteCadastro(Cliente c) {
-        initComponents();
+        
+        mapEstado = cedao.selectEstado();
+        arrEstado = mapEstado.keySet().toArray(new String[mapEstado.size()]);
+
+        mapCidade = cedao.selectCidade(1);
+        arrCidade = mapCidade.keySet().toArray(new String[mapCidade.size()]);
+        
+        initComponents(); 
+        
         if (c == null){
             btClienteExcluir.setEnabled(false);
             btClienteConta.setEnabled(false);            
@@ -35,8 +53,10 @@ public class ClienteCadastro extends javax.swing.JFrame {
             txtClienteRg.setText(c.getRG());
             txtClienteRua.setText(c.getRua());
             txtClienteNumero.setText(""+c.getNumero());
-            txtClienteCidade.setText(""+c.getCidade());
-            txtClienteUF.setText(""+c.getUF());
+
+            
+            //txtClienteCidade.setText(""+c.getCidade());
+            //txtClienteUF.setText(""+c.getUF());
         }
     }
     
@@ -142,7 +162,11 @@ public class ClienteCadastro extends javax.swing.JFrame {
             }
         });
 
-        estadoComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        estadoComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                estadoComboBoxActionPerformed(evt);
+            }
+        });
 
         cidadeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         cidadeComboBox.addActionListener(new java.awt.event.ActionListener() {
@@ -272,7 +296,7 @@ public class ClienteCadastro extends javax.swing.JFrame {
         Cliente c = new Cliente(txtClienteNome.getText().toString(), txtClienteSNome.getText().toString(),
                 txtClienteCPF.getText().toString(), txtClienteRg.getText().toString(),
                 txtClienteRua.getText().toString(), Integer.parseInt(txtClienteNumero.getText()),
-                Integer.parseInt(txtClienteCidade.getText()), Integer.parseInt(txtClienteUF.getText()), 
+                Integer.parseInt(cidadeComboBox.getToolTipText()), Integer.parseInt(estadoComboBox.getToolTipText()), 
                 Double.parseDouble(txtClienteSalario.getText()));
      
         dao.insertCliente(c);
@@ -299,8 +323,16 @@ public class ClienteCadastro extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_cidadeComboBoxActionPerformed
 
+    // listener de estado
+    private void estadoComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_estadoComboBoxActionPerformed
+        String chave = (String) estadoComboBox.getSelectedItem();
+        Integer valor = mapEstado.get(chave);
+        mapCidade = cedao.selectCidade(valor);
+        arrCidade = mapCidade.keySet().toArray(new String[mapCidade.size()]);
+        
+    }//GEN-LAST:event_estadoComboBoxActionPerformed
+
     //minhas variables
-    private String[]''
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btClienteCancelar;
     private javax.swing.JButton btClienteConta;

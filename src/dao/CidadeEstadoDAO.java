@@ -18,11 +18,11 @@ import java.util.Map;
  */
 public class CidadeEstadoDAO {
 
-    String stmtEstado = "SELECT * FROM estado";
+    String stmtEstado = "SELECT * FROM uf";
     String stmtCidade = "SELECT * FROM cidade WHERE uf_coduf = ? ";
     
     public Map selectEstado(){
-        Map<Integer,String> mapEstado = new HashMap<Integer,String>();
+        Map<String,Integer> mapEstado = new HashMap<String,Integer>();
         
         Connection con = null;
         PreparedStatement stmt = null;
@@ -33,7 +33,7 @@ public class CidadeEstadoDAO {
             stmt = con.prepareStatement(stmtEstado);
             rs = stmt.executeQuery();
             while(rs.next()){
-                mapEstado.put(rs.getInt("coduf"), rs.getString("siglauf"));
+                mapEstado.put(rs.getString("siglauf"),rs.getInt("coduf"));
             }
             return mapEstado;
         } catch (Exception e) {
@@ -44,7 +44,7 @@ public class CidadeEstadoDAO {
 
     public Map selectCidade(int estado){
         
-        Map<Integer,String> mapCidade = new HashMap<Integer,String>();
+        Map<String,Integer> mapCidade = new HashMap<String,Integer>();
         
         Connection con = null;
         PreparedStatement stmt = null;
@@ -56,7 +56,7 @@ public class CidadeEstadoDAO {
             stmt.setInt(1, estado);
             rs = stmt.executeQuery();
             while(rs.next()){
-                mapCidade.put(rs.getInt("codcidade"), rs.getString("nomecidade"));
+                mapCidade.put(rs.getString("nomecidade"), rs.getInt("codcidade"));
             }
             return mapCidade;
         } catch (Exception e) {

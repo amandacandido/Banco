@@ -38,8 +38,7 @@ public class ClienteCadastro extends javax.swing.JFrame {
             btClienteExcluir.setEnabled(false);
             btClienteConta.setEnabled(false);            
         }else{
-            // TODO: selecionar estado correto do cliente e cidade
-            //{}
+            
             btClienteExcluir.setEnabled(true);
             btClienteConta.setEnabled(true);
             
@@ -51,6 +50,7 @@ public class ClienteCadastro extends javax.swing.JFrame {
             txtClienteRua.setText(c.getRua());
             txtClienteNumero.setText(""+c.getNumero());
             
+             // selecionar estado correto do cliente e cidade
             String strComboEst = null;
             int intComboEst = 0;
             for (Map.Entry<String, Integer> entry : mapEstado.entrySet()) {
@@ -59,17 +59,24 @@ public class ClienteCadastro extends javax.swing.JFrame {
                     intComboEst = entry.getValue();
                 }
             }
+            arrEstado = mapEstado.keySet().toArray(new String[mapEstado.size()]);
             estadoComboBox.setSelectedItem(mapEstado.get(strComboEst));
             
             mapCidade = cedao.selectCidade(intComboEst);
             String strComboCid = null;
+            int intComboCid = 0;
             for (Map.Entry<String, Integer> entry : mapCidade.entrySet()) {
                 if(entry.getValue().equals(c.getCidade())){
                     strComboCid = entry.getKey();
+                    intComboCid = entry.getValue();
                 }
             }
-            cidadeComboBox.setSelectedItem(mapCidade.get(strComboCid));
+            arrCidade = mapCidade.keySet().toArray(new String[mapCidade.size()]);
             
+            estadoComboBox.setSelectedItem(cedao.selectEstadoFromCidade(intComboCid) );
+            cidadeComboBox.setModel( new DefaultComboBoxModel(arrCidade) ); 
+            cidadeComboBox.setSelectedItem(mapCidade.get(strComboCid));
+                                    
         }
     }
     

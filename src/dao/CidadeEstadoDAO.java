@@ -9,6 +9,7 @@ import Classes.Cliente;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,7 +21,8 @@ public class CidadeEstadoDAO {
 
     String stmtEstado = "SELECT * FROM uf";
     String stmtCidade = "SELECT * FROM cidade WHERE uf_coduf = ? ";
-    
+    String stmtEstadoFromCidade = "SELECT siglauf FROM uf WHERE coduf = (SELECT uf_coduf FROM cidade WHERE codcidade = ? ) ";
+
     public Map selectEstado(){
         Map<String,Integer> mapEstado = new HashMap<String,Integer>();
         
@@ -63,5 +65,25 @@ public class CidadeEstadoDAO {
             throw new RuntimeException("Erro ao buscar estados. Origem = "+e.getMessage());
         }
         
+    }
+    
+    public String selectEstadoFromCidade(int codcidade) {
+        Connection con = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        String coduf = null;
+        try {
+            con = ConnectionFactory.getConnection();
+            stmt = con.prepareStatement(stmtEstadoFromCidade);
+            stmt.setInt(1, codcidade);
+            rs = stmt.executeQuery();
+            while(rs.next()){
+                coduf = rs.getString("siglauf");
+            }
+            con.close();
+            return coduf;
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao buscar estados. Origem = "+e.getMessage());
+        }
     }
 }

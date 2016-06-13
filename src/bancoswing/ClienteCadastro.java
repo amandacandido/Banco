@@ -1,4 +1,3 @@
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -7,79 +6,56 @@
 package bancoswing;
 
 import Classes.Cliente;
-import dao.CidadeEstadoDAO;
+import Classes.Conta;
 import dao.ClienteDAO;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.util.Map;
-import javax.swing.ComboBoxModel;
-import javax.swing.DefaultComboBoxModel;
+import dao.ContaDAO;
 import javax.swing.JOptionPane;
 
 /**
  *
- * @author Lemke, Nantes
+ * @author Lemke
  */
 public class ClienteCadastro extends javax.swing.JFrame {
 
+    Cliente cliente;
+
     /**
-     * Creates new form ClienteCadastro    /**
      * Creates new form ClienteCadastro
      */
-    
     public ClienteCadastro(Cliente c) {
-        
-        mapEstado = cedao.selectEstado();   // consulta BD
-        arrEstado = mapEstado.keySet().toArray(new String[mapEstado.size()]);
-                
-        initComponents(); 
-        
-        if (c == null){
+        initComponents();
+        if (c == null) {
+            txtClienteCPF.setEnabled(true);
+
             btClienteExcluir.setEnabled(false);
-            btClienteConta.setEnabled(false);            
-        }else{
-            
+            btClienteConta.setEnabled(false);
+        } else {
+            txtClienteCPF.setEnabled(false);
+
             btClienteExcluir.setEnabled(true);
-            btClienteConta.setEnabled(true);
-            
+
+            ContaDAO dao = new ContaDAO();
+            Conta conta = dao.consulta(c);
+            if (conta == null) {
+                btClienteConta.setEnabled(true);
+            }else{
+                btClienteConta.setEnabled(false);
+            }
+
             txtClienteNome.setText(c.getNome());
             txtClienteSNome.setText(c.getSobreNome());
-            txtClienteSalario.setText(""+c.getSalario());
+            txtClienteSalario.setText("" + c.getSalario());
             txtClienteCPF.setText(c.getCPF());
             txtClienteRg.setText(c.getRG());
             txtClienteRua.setText(c.getRua());
-            txtClienteNumero.setText(""+c.getNumero());
-            
-             // selecionar estado correto do cliente e cidade
-            String strComboEst = null;
-            int intComboEst = 0;
-            for (Map.Entry<String, Integer> entry : mapEstado.entrySet()) {
-                if(entry.getValue().equals(c.getUF())){
-                    strComboEst = entry.getKey();
-                    intComboEst = entry.getValue();
-                }
-            }
-            arrEstado = mapEstado.keySet().toArray(new String[mapEstado.size()]);
-            estadoComboBox.setSelectedItem(mapEstado.get(strComboEst));
-            
-            mapCidade = cedao.selectCidade(intComboEst);
-            String strComboCid = null;
-            int intComboCid = 0;
-            for (Map.Entry<String, Integer> entry : mapCidade.entrySet()) {
-                if(entry.getValue().equals(c.getCidade())){
-                    strComboCid = entry.getKey();
-                    intComboCid = entry.getValue();
-                }
-            }
-            arrCidade = mapCidade.keySet().toArray(new String[mapCidade.size()]);
-            
-            estadoComboBox.setSelectedItem(cedao.selectEstadoFromCidade(intComboCid) );
-            cidadeComboBox.setModel( new DefaultComboBoxModel(arrCidade) ); 
-            cidadeComboBox.setSelectedItem(mapCidade.get(strComboCid));
-                                    
+            txtClienteNumero.setText("" + c.getNumero());
+            txtClienteCidade.setText("" + c.getCidade());
+            txtClienteUF.setText("" + c.getUF());
+
+            cliente = c;
         }
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -105,23 +81,15 @@ public class ClienteCadastro extends javax.swing.JFrame {
         txtClienteRua = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         txtClienteNumero = new javax.swing.JTextField();
-        jLabelCidade = new javax.swing.JLabel();
-        jLabelUF = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        txtClienteCidade = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
+        txtClienteUF = new javax.swing.JTextField();
         btClienteSalvar = new javax.swing.JButton();
         btClientePesquisar = new javax.swing.JButton();
         btClienteCancelar = new javax.swing.JButton();
         btClienteExcluir = new javax.swing.JButton();
         btClienteConta = new javax.swing.JButton();
-        estadoComboBox = new javax.swing.JComboBox<>(
-            arrEstado
-        );
-        String chave = (String) estadoComboBox.getSelectedItem();
-        Integer valor = mapEstado.get(chave);
-        mapCidade = cedao.selectCidade(valor);
-        arrCidade = mapCidade.keySet().toArray(new String[mapCidade.size()]);
-        cidadeComboBox = new javax.swing.JComboBox<>(
-            arrCidade
-        );
 
         jLabel6.setText("RG");
 
@@ -149,9 +117,15 @@ public class ClienteCadastro extends javax.swing.JFrame {
             }
         });
 
-        jLabelCidade.setText("Cidade:");
+        jLabel9.setText("Cidade:");
 
-        jLabelUF.setText("UF:");
+        jLabel8.setText("UF:");
+
+        txtClienteUF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtClienteUFActionPerformed(evt);
+            }
+        });
 
         btClienteSalvar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/ic_save_black_18dp_1x.png"))); // NOI18N
         btClienteSalvar.setText("Salvar");
@@ -180,6 +154,11 @@ public class ClienteCadastro extends javax.swing.JFrame {
         btClienteExcluir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/ic_delete_black_18dp_1x.png"))); // NOI18N
         btClienteExcluir.setText("Excluir");
         btClienteExcluir.setEnabled(false);
+        btClienteExcluir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btClienteExcluirActionPerformed(evt);
+            }
+        });
 
         btClienteConta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/ic_forward_black_18dp_1x.png"))); // NOI18N
         btClienteConta.setText("Criar Conta");
@@ -190,91 +169,62 @@ public class ClienteCadastro extends javax.swing.JFrame {
             }
         });
 
-        estadoComboBox.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                estadoComboBoxItemStateChanged(evt);
-            }
-        });
-        estadoComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                estadoComboBoxActionPerformed(evt);
-            }
-        });
-
-        cidadeComboBox.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                cidadeComboBoxItemStateChanged(evt);
-            }
-        });
-        cidadeComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cidadeComboBoxActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(22, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(jLabel5)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabelUF)
-                                .addGap(6, 6, 6)))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addComponent(estadoComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(35, 35, 35)
-                                .addComponent(jLabelCidade)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(cidadeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(txtClienteRua, javax.swing.GroupLayout.PREFERRED_SIZE, 362, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel7)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtClienteNumero, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(btClienteConta)
-                                .addGap(66, 66, 66))))
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtClienteRg, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtClienteCPF, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtClienteNome, javax.swing.GroupLayout.PREFERRED_SIZE, 404, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtClienteRg, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtClienteCPF, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtClienteSNome, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel10)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtClienteSalario, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btClienteSalvar, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btClientePesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btClienteCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btClienteExcluir, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap())))
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtClienteSNome, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel10)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtClienteSalario, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                            .addComponent(jLabel1)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(txtClienteNome, javax.swing.GroupLayout.PREFERRED_SIZE, 404, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                            .addComponent(jLabel5)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(txtClienteRua, javax.swing.GroupLayout.PREFERRED_SIZE, 362, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(jLabel7)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(txtClienteNumero, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(jLabel9)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(txtClienteCidade, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(jLabel8)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(txtClienteUF, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(18, 18, 18)
+                            .addComponent(btClienteConta)
+                            .addGap(46, 46, 46)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btClienteSalvar, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btClientePesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btClienteCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btClienteExcluir, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(20, 20, 20))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -304,13 +254,12 @@ public class ClienteCadastro extends javax.swing.JFrame {
                     .addComponent(jLabel7)
                     .addComponent(txtClienteNumero, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabelCidade)
-                        .addComponent(btClienteConta)
-                        .addComponent(jLabelUF)
-                        .addComponent(cidadeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(estadoComboBox, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel9)
+                    .addComponent(txtClienteCidade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel8)
+                    .addComponent(txtClienteUF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btClienteConta))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btClienteSalvar)
@@ -327,23 +276,22 @@ public class ClienteCadastro extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtClienteNumeroActionPerformed
 
+    private void txtClienteUFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtClienteUFActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtClienteUFActionPerformed
+
     private void btClienteSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btClienteSalvarActionPerformed
-        String chaveEst = (String) estadoComboBox.getSelectedItem();
-        int codEst = mapEstado.get(chaveEst);
-        String chaveCid = (String) cidadeComboBox.getSelectedItem();
-        int codCid = mapCidade.get(chaveCid);
-        
         ClienteDAO dao = new ClienteDAO();
-        
+
         Cliente c = new Cliente(txtClienteNome.getText().toString(), txtClienteSNome.getText().toString(),
                 txtClienteCPF.getText().toString(), txtClienteRg.getText().toString(),
                 txtClienteRua.getText().toString(), Integer.parseInt(txtClienteNumero.getText()),
-                codCid, codEst,     // códs. Cidade e UF 
+                Integer.parseInt(txtClienteCidade.getText()), Integer.parseInt(txtClienteUF.getText()),
                 Double.parseDouble(txtClienteSalario.getText()));
-     
+
         dao.insertCliente(c);
         JOptionPane.showMessageDialog(null, "Salvo com sucesso!", "OK", JOptionPane.INFORMATION_MESSAGE);
-        
+
     }//GEN-LAST:event_btClienteSalvarActionPerformed
 
     private void btClienteCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btClienteCancelarActionPerformed
@@ -358,50 +306,24 @@ public class ClienteCadastro extends javax.swing.JFrame {
 
     private void btClienteContaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btClienteContaActionPerformed
         this.setVisible(false);
-        new ContaCadastro().setVisible(true);
+        new ContaCadastro(cliente).setVisible(true);
     }//GEN-LAST:event_btClienteContaActionPerformed
 
-    private void cidadeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cidadeComboBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cidadeComboBoxActionPerformed
+    private void btClienteExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btClienteExcluirActionPerformed
+        ClienteDAO dao = new ClienteDAO();
+        dao.deleteCliente(cliente);
+        JOptionPane.showMessageDialog(null, "Excluído com sucesso!", "OK", JOptionPane.INFORMATION_MESSAGE);
 
-    // listener de estado
-    
-    private void estadoComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_estadoComboBoxActionPerformed
+        this.setVisible(false);
+        new Main().setVisible(true);
+    }//GEN-LAST:event_btClienteExcluirActionPerformed
 
-    }//GEN-LAST:event_estadoComboBoxActionPerformed
-
-    private void estadoComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_estadoComboBoxItemStateChanged
-        
-        String chave = (String) estadoComboBox.getSelectedItem();
-        Integer valor = mapEstado.get(chave);
-        mapCidade = cedao.selectCidade(valor);
-        arrCidade = mapCidade.keySet().toArray(new String[mapCidade.size()]);
-        
-        DefaultComboBoxModel model = new DefaultComboBoxModel( arrCidade );
-        cidadeComboBox.setModel( model );
-    }//GEN-LAST:event_estadoComboBoxItemStateChanged
-
-    private void cidadeComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cidadeComboBoxItemStateChanged
-             
-        
-    }//GEN-LAST:event_cidadeComboBoxItemStateChanged
-
-    //minhas variables
-    
-    private CidadeEstadoDAO cedao = new CidadeEstadoDAO();
-    private Map<String,Integer> mapEstado;
-    private Map<String,Integer> mapCidade;
-    private String[] arrEstado;
-    private String[] arrCidade;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btClienteCancelar;
     private javax.swing.JButton btClienteConta;
     private javax.swing.JButton btClienteExcluir;
     private javax.swing.JButton btClientePesquisar;
     private javax.swing.JButton btClienteSalvar;
-    private javax.swing.JComboBox<String> cidadeComboBox;
-    private javax.swing.JComboBox<String> estadoComboBox;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
@@ -410,15 +332,17 @@ public class ClienteCadastro extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabelCidade;
-    private javax.swing.JLabel jLabelUF;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JTextField jTextField6;
     private javax.swing.JTextField txtClienteCPF;
+    private javax.swing.JTextField txtClienteCidade;
     private javax.swing.JTextField txtClienteNome;
     private javax.swing.JTextField txtClienteNumero;
     private javax.swing.JTextField txtClienteRg;
     private javax.swing.JTextField txtClienteRua;
     private javax.swing.JTextField txtClienteSNome;
     private javax.swing.JTextField txtClienteSalario;
+    private javax.swing.JTextField txtClienteUF;
     // End of variables declaration//GEN-END:variables
 }

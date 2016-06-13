@@ -126,12 +126,12 @@ public class Main extends javax.swing.JFrame {
 
     private void btMainCriContaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btMainCriContaActionPerformed
         this.setVisible(false);
-        new ContaCadastro().setVisible(true);
+        new ContaCadastro(null).setVisible(true);
     }//GEN-LAST:event_btMainCriContaActionPerformed
 
     private void btMainGerContaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btMainGerContaActionPerformed
         this.setVisible(false);
-        new ContaGerenciar().setVisible(true);
+        new ContaGerenciar(null).setVisible(true);
     }//GEN-LAST:event_btMainGerContaActionPerformed
 
     /**

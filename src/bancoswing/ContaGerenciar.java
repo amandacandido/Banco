@@ -5,7 +5,11 @@
  */
 package bancoswing;
 
+import Classes.Cliente;
+import Classes.Conta;
+import dao.ContaDAO;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 /**
@@ -18,13 +22,27 @@ public class ContaGerenciar extends javax.swing.JFrame {
     private final String deposito = "Depositar";
     private final String saldo = "Consultar Saldo";
     private final String remunera = "Remunerar";
+    Cliente cliente;
+    Conta conta;
 
     /**
      * Creates new form ContaCadastro
      */
-    public ContaGerenciar() {
+    public ContaGerenciar(Cliente c) {
         initComponents();
         Limpa();
+
+        if (c != null) {
+            cliente = c;
+
+            ContaDAO dao = new ContaDAO();
+            conta = dao.consulta(c);
+
+            if (conta != null) {
+                txtContaGerCpf.setText(c.getCPF());
+                txtContaGerNome.setText(c.getNome());
+            }
+        }
     }
 
     /**
@@ -75,7 +93,7 @@ public class ContaGerenciar extends javax.swing.JFrame {
         });
 
         btContaGerSalvar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/ic_save_black_18dp_1x.png"))); // NOI18N
-        btContaGerSalvar.setText("Salvar");
+        btContaGerSalvar.setText("Executar");
         btContaGerSalvar.setEnabled(false);
         btContaGerSalvar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -94,7 +112,7 @@ public class ContaGerenciar extends javax.swing.JFrame {
         jLabel2.setText("Depósito Inicial: ");
 
         txtContaValor.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        txtContaValor.setText("0,00");
+        txtContaValor.setText("0.00");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -163,7 +181,26 @@ public class ContaGerenciar extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btContaGerSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btContaGerSalvarActionPerformed
-        // TODO add your handling code here:
+        if (cbContaGerAcao.getSelectedItem().toString().equals(saque)) {
+            conta.saca(Double.parseDouble(txtContaValor.getText()));
+            JOptionPane.showMessageDialog(null, "Saque bem sucedido!", "OK", JOptionPane.INFORMATION_MESSAGE);
+
+        } else if (cbContaGerAcao.getSelectedItem().toString().equals(deposito)) {
+            conta.deposita(Double.parseDouble(txtContaValor.getText()));
+            JOptionPane.showMessageDialog(null, "Deposito bem sucedido!", "OK", JOptionPane.INFORMATION_MESSAGE);
+
+        } else if (cbContaGerAcao.getSelectedItem().toString().equals(saldo)) {
+            jLabel2.setText("Seu Saldo é:");
+            txtContaValor.setText("" + conta.getSaldo());
+
+        } else if (cbContaGerAcao.getSelectedItem().toString().equals(remunera)) {
+            conta.remunera();
+            JOptionPane.showMessageDialog(null, "Remuneração bem sucedida!", "OK", JOptionPane.INFORMATION_MESSAGE);
+
+        }
+
+        ContaDAO dao = new ContaDAO();
+        dao.altera(conta);
     }//GEN-LAST:event_btContaGerSalvarActionPerformed
 
     private void btContaGerCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btContaGerCancelarActionPerformed
@@ -178,7 +215,8 @@ public class ContaGerenciar extends javax.swing.JFrame {
             txtContaValor.setEditable(true);
 
             jLabel2.setText("Valor do Saque:");
-            
+            txtContaValor.setText("0.00");
+
             btContaGerSalvar.setEnabled(true);
 
         } else if (cbContaGerAcao.getSelectedItem().toString().equals(deposito)) {
@@ -187,6 +225,7 @@ public class ContaGerenciar extends javax.swing.JFrame {
             txtContaValor.setEditable(true);
 
             jLabel2.setText("Valor do Depósito:");
+            txtContaValor.setText("0.00");
 
             btContaGerSalvar.setEnabled(true);
 

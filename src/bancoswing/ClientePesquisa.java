@@ -6,11 +6,14 @@
 package bancoswing;
 
 import Classes.Cliente;
+import Classes.Conta;
 import dao.ClienteDAO;
+import dao.ContaDAO;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
@@ -23,13 +26,15 @@ public class ClientePesquisa extends javax.swing.JFrame {
     private String tela_anterior;
     private ArrayList<Cliente> cliList;
     private ModelTblClientePesquisa modelo = new ModelTblClientePesquisa("nome", "");
+
     /**
      * Creates new form ClientePesquisa
+     *
      * @param tela_anterior
      */
     public ClientePesquisa(String tela_anterior) {
 
-        this.tela_anterior = tela_anterior;        
+        this.tela_anterior = tela_anterior;
         initComponents();
         optNome.setSelected(true);
 
@@ -160,7 +165,7 @@ public class ClientePesquisa extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    
+
     // tbl changed
     //radio snome    
     private void optSNomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_optSNomeActionPerformed
@@ -184,17 +189,37 @@ public class ClientePesquisa extends javax.swing.JFrame {
     private void tblClienteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblClienteMouseClicked
         if (evt.getClickCount() == 2 && !evt.isConsumed()) {
             evt.consume();
-            
+
             int i = tblCliente.getSelectedRow();
             Cliente c = modelo.getRow(i);
-        
+
             this.setVisible(false);
             if (tela_anterior.equals(new ClienteCadastro(null).getTitle())) {
                 new ClienteCadastro(c).setVisible(true);
-            } else if (tela_anterior.equals(new ContaCadastro().getTitle())) {
-                new ContaCadastro().setVisible(true);
-            } else if (tela_anterior.equals(new ContaGerenciar().getTitle())) {
-                new ContaGerenciar().setVisible(true);
+            } else if (tela_anterior.equals(new ContaCadastro(null).getTitle())) {
+
+                ContaDAO dao = new ContaDAO();
+                Conta conta = dao.consulta(c);
+                if (conta != null) {
+                    JOptionPane.showMessageDialog(null, "Já possui conta!", "OK", JOptionPane.INFORMATION_MESSAGE);
+                    new Main().setVisible(true);
+
+                } else {
+                    new ContaCadastro(c).setVisible(true);
+                }
+
+            } else if (tela_anterior.equals(new ContaGerenciar(null).getTitle())) {
+
+                ContaDAO dao = new ContaDAO();
+                Conta conta = dao.consulta(c);
+                if (conta == null) {
+                    JOptionPane.showMessageDialog(null, "Não passui conta!", "OK", JOptionPane.INFORMATION_MESSAGE);
+                    new Main().setVisible(true);
+
+                } else {
+                    new ContaGerenciar(c).setVisible(true);
+                }
+
             } else {
                 new Main().setVisible(true);
             }
@@ -206,10 +231,10 @@ public class ClientePesquisa extends javax.swing.JFrame {
         this.setVisible(false);
         if (tela_anterior.equals(new ClienteCadastro(null).getTitle())) {
             new ClienteCadastro(null).setVisible(true);
-        } else if (tela_anterior.equals(new ContaCadastro().getTitle())) {
-            new ContaCadastro().setVisible(true);
-        } else if (tela_anterior.equals(new ContaGerenciar().getTitle())) {
-            new ContaGerenciar().setVisible(true);
+        } else if (tela_anterior.equals(new ContaCadastro(null).getTitle())) {
+            new ContaCadastro(null).setVisible(true);
+        } else if (tela_anterior.equals(new ContaGerenciar(null).getTitle())) {
+            new ContaGerenciar(null).setVisible(true);
         } else {
             new Main().setVisible(true);
         }
@@ -226,25 +251,22 @@ public class ClientePesquisa extends javax.swing.JFrame {
         // Clicou buscar
         String opt = null;
         String data = txtPesquisa.getText();
-        if(optCPF.isSelected()){
-            opt = "cpf";            
-        }
-        else if(optNome.isSelected()){
+        if (optCPF.isSelected()) {
+            opt = "cpf";
+        } else if (optNome.isSelected()) {
             opt = "nome";
-        }
-        else if(optRg.isSelected()){
+        } else if (optRg.isSelected()) {
             opt = "rg";
-        }
-        else if(optSNome.isSelected()){
+        } else if (optSNome.isSelected()) {
             opt = "sobrenome";
         }
-      
+
         // select do banco
         modelo.reSelect(opt, data);
         //tblCliente.setModel(modelo);
         //
-                   
-        
+
+
     }//GEN-LAST:event_btClienteBuscarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

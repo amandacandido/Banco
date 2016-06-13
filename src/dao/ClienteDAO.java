@@ -19,10 +19,9 @@ import java.util.ArrayList;
  */
 public class ClienteDAO {
     
-    private final String stmtDeleteCliente = "DELETE * FROM cliente WHERE cpf = ? ";
-    
-    private final String stmtInsertCliente = "INSERT INTO cliente (nome, sobrenome, cpf, rg, rua, numero, "
+    private final String stmtInsertCliente = "INSERT INTO Cliente (nome, sobrenome, cpf, rg, rua, numero, "
             + "cidade_codcidade, uf_coduf, salario) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ";
+    private final String stmtDeleteCliente = "DELETE FROM Cliente where cpf = ?";
     
     // retorna arrays de clientes pesquisados por algum critério
     public ArrayList selectCliente(String opt, String dado){
@@ -76,7 +75,7 @@ public class ClienteDAO {
             stmt.execute();
             
         }catch(SQLException | ClassNotFoundException ex){
-            throw new RuntimeException("Erro ao buscar cliente. Origem = "+ex.getMessage());
+            throw new RuntimeException("Erro ao inserir cliente. Origem = "+ex.getMessage());
         }finally{
             try{stmt.close();}catch(Exception ex){System.out.println("Erro ao fechar stmt. Ex="+ex.getMessage());};
             try{con.close();}catch(Exception ex){System.out.println("Erro ao fechar conexão. Ex="+ex.getMessage());};

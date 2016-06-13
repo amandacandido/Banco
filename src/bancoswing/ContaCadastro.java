@@ -5,7 +5,13 @@
  */
 package bancoswing;
 
+import Classes.Cliente;
+import Classes.Conta;
+import Classes.ContaCorrente;
+import Classes.ContaInvestimento;
+import dao.ContaDAO;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 /**
@@ -16,13 +22,19 @@ public class ContaCadastro extends javax.swing.JFrame {
 
     private final String conta_corrente = "Corrente";
     private final String conta_investimento = "Investimento";
+    Cliente cliente;
 
     /**
      * Creates new form ContaCadastro
      */
-    public ContaCadastro() {
+    public ContaCadastro(Cliente c) {
         initComponents();
         Limpa();
+        if (c != null) {
+            cliente = c;
+            txtContaCpf.setText(c.getCPF());
+            txtContaNome.setText(c.getNome());
+        }
     }
 
     /**
@@ -98,23 +110,33 @@ public class ContaCadastro extends javax.swing.JFrame {
         jLabel2.setText("Depósito Inicial: ");
 
         txtContaDeposito.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        txtContaDeposito.setText("0,00");
+        txtContaDeposito.setText("0.00");
 
         jLabel3.setText("Limite:");
 
         txtContaLimite.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        txtContaLimite.setText("0,00");
+        txtContaLimite.setText("0.00");
         txtContaLimite.setVerifyInputWhenFocusTarget(false);
+        txtContaLimite.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtContaLimiteActionPerformed(evt);
+            }
+        });
 
         jLabel6.setText("Montante Min:");
 
         txtContaMontante.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        txtContaMontante.setText("0,00");
+        txtContaMontante.setText("0.00");
 
         jLabel7.setText("Deposito Min:");
 
         txtContaDepositoMin.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        txtContaDepositoMin.setText("0,00");
+        txtContaDepositoMin.setText("0.00");
+        txtContaDepositoMin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtContaDepositoMinActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -203,7 +225,25 @@ public class ContaCadastro extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btContaSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btContaSalvarActionPerformed
-        // TODO add your handling code here:
+        ContaDAO dao = new ContaDAO();
+        Conta conta;
+        if (cbContaTipo.getSelectedItem().toString().equals(conta_corrente)) {
+            conta = new ContaCorrente(cliente,
+                    Double.parseDouble(txtContaDeposito.getText()),
+                    Double.parseDouble(txtContaLimite.getText()));
+
+//        } else if (cbContaTipo.getSelectedItem().toString().equals(conta_investimento)) {
+        } else {
+            conta = new ContaInvestimento(cliente,
+                    Double.parseDouble(txtContaDeposito.getText()),
+                    Double.parseDouble(txtContaMontante.getText()),
+                    Double.parseDouble(txtContaDepositoMin.getText()));
+        }
+        dao.adiciona(conta);
+        JOptionPane.showMessageDialog(null, "Salvo com sucesso!", "OK", JOptionPane.INFORMATION_MESSAGE);
+
+        this.setVisible(false);
+        new Main().setVisible(true);
     }//GEN-LAST:event_btContaSalvarActionPerformed
 
     private void btContaCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btContaCancelarActionPerformed
@@ -243,6 +283,14 @@ public class ContaCadastro extends javax.swing.JFrame {
         this.setVisible(false);
         new ClientePesquisa(this.getTitle()).setVisible(true);
     }//GEN-LAST:event_btContaBuscarActionPerformed
+
+    private void txtContaLimiteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtContaLimiteActionPerformed
+
+    }//GEN-LAST:event_txtContaLimiteActionPerformed
+
+    private void txtContaDepositoMinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtContaDepositoMinActionPerformed
+
+    }//GEN-LAST:event_txtContaDepositoMinActionPerformed
 
     private void Limpa() {
         btContaSalvar.setEnabled(false);

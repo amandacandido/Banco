@@ -19,7 +19,7 @@ import java.sql.ResultSet;
  */
 public class ContaDAO {
 
-    private final String stmtAdiciona = "insert into conta (saldo,limite,montanteMinimo, depositoMinimo, cliente_cpf) values (0,?,?,?,?)";
+    private final String stmtAdiciona = "insert into conta (saldo,limite,montanteMinimo, depositoMinimo, cliente_cpf) values (?,?,?,?,?)";
     private final String stmtSeleciona = "select conta.* from conta join cliente on cliente.cpf = conta.cliente_cpf where cliente.cpf=?";
     private final String stmtAltera = "update conta set limite=?, montanteMinimo=?, depositoMinimo=?, saldo=? where cliente_cpf=?";
 
@@ -32,20 +32,22 @@ public class ContaDAO {
             con = new ConnectionFactory().getConnection();
             stmt = con.prepareStatement(stmtAdiciona);
 
+            stmt.setDouble(1, c.getSaldo());
+
             if (c instanceof ContaInvestimento) {
                 ContaInvestimento investimento = (ContaInvestimento) c;
-                stmt.setString(1, null);
-                stmt.setDouble(2, investimento.getMontanteMinimo());
-                stmt.setDouble(3, investimento.getDepositoMinimo());
+                stmt.setString(2, null);
+                stmt.setDouble(3, investimento.getMontanteMinimo());
+                stmt.setDouble(4, investimento.getDepositoMinimo());
 
             } else if (c instanceof ContaCorrente) {
                 ContaCorrente corrente = (ContaCorrente) c;
-                stmt.setDouble(1, corrente.getLimite());
-                stmt.setString(2, null);
+                stmt.setDouble(2, corrente.getLimite());
                 stmt.setString(3, null);
+                stmt.setString(4, null);
             }
 
-            stmt.setString(4, c.getDono().getCPF());
+            stmt.setString(5, c.getDono().getCPF());
 
             stmt.execute();
 
